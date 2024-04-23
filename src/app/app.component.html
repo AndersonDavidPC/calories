@@ -168,30 +168,32 @@
 <main class="main">
   <div class="content">
     <div class="left-side">
-      <h1>Calculadora de Calorías</h1>
+      <h1>{{title}}</h1>
       <p>Hola, bienvenido(a), al finalizar este formulario conoceras cuantas calorías debes consumir por día</p>
     </div>
     <div>
       <form>
         <div>
           <label for="metrix">Sistema: </label>
-          <select id="metrix" name="metrix">
+          <select id="metrix" name="metrix" (change)="handleSelectionChange($event)">
             <option value="metric">Métrico</option>
             <option value="imperial">Imperial</option>
           </select>
         </div>
         <div>
           <div>
-            <label for="age" aria-required="true">Edad: </label>
-            <input type="number" id="age" placeholder="Edad" name="age">
-          </div>
-          <div>
-            <label for="weight" aria-required="true">Peso (kg): </label>
-            <input type="number" id="weight" placeholder="Peso" name="weight">
-          </div>
-          <div>
-            <label for="height">Altura (cm): </label>
-            <input type="number" id="height" placeholder="Altura" name="height">
+            <div>
+              <label for="age">Edad: </label>
+              <input type="number" id="age" placeholder="Entre {{ min_age }} y {{ max_age }}" name="age" (input)="handleInputChange($event)">
+            </div>
+            <div>
+              <label for="weight">Peso ({{ weight_unit }}): </label>
+              <input type="number" id="weight" placeholder="Entre {{ min_weight }} y {{ max_weight }}" name="weight" (input)="handleInputChange($event)">
+            </div>
+            <div>
+              <label for="height">Altura ({{ height_unit }}): </label>
+              <input type="number" id="height" placeholder="Entre {{ min_height }} y {{ max_height }}" name="height" (input)="handleInputChange($event)">
+            </div>
           </div>
         </div>
       </form>
