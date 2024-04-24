@@ -1,10 +1,12 @@
 import { Component } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
+import { CommonModule } from '@angular/common';
+import { min } from 'rxjs';
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [RouterOutlet],
+  imports: [RouterOutlet, CommonModule],
   templateUrl: './app.component.html',
   styleUrl: './app.component.css'
 })
@@ -14,7 +16,9 @@ export class AppComponent {
   weight: number = 0;
   height: number = 0;
   age: number = 0;
+  factor: number = 0;
   calories: number = 0;
+  metrix: string = 'metric';
 
   // Apoyo visual usuario
   weight_unit: string = 'kg';
@@ -39,23 +43,29 @@ export class AppComponent {
     } else if (value === 'imperial') {
       this.weight_unit = 'lb';
       this.height_unit = 'in';
-      this.min_weight = 89.29;
-      this.max_weight = 661.39;
-      this.min_height = 55.12;
-      this.max_height = 88.58;
+      this.min_weight = this.kgToLb(this.min_weight);
+      this.max_weight = this.kgToLb(this.max_weight);
+      this.min_height = this.mToIn(this.min_height);
+      this.max_height = this.mToIn(this.max_height);
     }
+    this.metrix = value;
   }
 
   handleInputChange(event: Event){
     const input = event.target as HTMLInputElement;
     const value = parseFloat(input.value);
     if (input.id === 'weight') {
-      this.weight = (this.weight_unit === 'kg') ? this.kgToLb(value) : value;
+      this.weight = (this.metrix === 'metric') ? this.kgToLb(value) : value;
+      // console.log('Peso: '+this.weight+ ' Factor: ' + this.factor + 'min: '+this.min_weight + 'max: ' + this.max_weight);
+      this.validateWeight();
     } else if (input.id === 'height') {
-      this.height = (this.height_unit === 'm') ? this.mToIn(value) : value;
+      this.height = (this.metrix === 'metric') ? this.mToIn(value) : value;
+      this.validateHeight();
     } else if (input.id === 'age') {
       this.age = value;
+      this.validateAge();
     }
+    this.calculateCalories();
   }
   //Captura siempre en sistema imperial debido a que el cálculo se hace en base a libras y pulgadas
   kgToLb(kg: number): number {
@@ -63,5 +73,33 @@ export class AppComponent {
   }
   mToIn(m: number): number {
     return m * 39.3701;
+  }
+
+  calculateFactor() {
+    if (this.weight<165 && this.weight>=this.min_weight){
+      this.factor = 1.6;
+    }
+    else if (this.weight>=165 && this.weight<201){
+      this.factor = 1.4;
+    }
+    else if (this.weight>=201 && this.weight<220){
+      this.factor = 1.2;
+    }
+    else if (this.weight>=220 && this.weight<=this.max_weight){
+      this.factor = 1;
+    }
+  }
+  calculateCalories(){
+    this.calculateFactor();
+    this.calories = Number(((10 * this.weight + 6.25 * this.height - 5 * this.age + 5) * this.factor).toFixed(2));
+  }
+  validateAge(): boolean {
+    return this.age >= this.min_age && this.age <= this.max_age && Number.isInteger(this.age);
+  }
+  validateWeight(): boolean {
+    return this.metrix ==='metric' ? (this.weight >= this.kgToLb(this.min_weight) && this.weight <= this.kgToLb(this.max_weight)) : (this.weight >= this.min_weight && this.weight <= this.max_weight);
+  }
+  validateHeight(): boolean {
+    return this.metrix ==='metric' ? (this.height >= this.mToIn(this.min_height) && this.height <= this.mToIn(this.max_height)) : (this.height >= this.min_height && this.height <= this.max_height);
   }
 }
