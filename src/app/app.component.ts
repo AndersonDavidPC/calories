@@ -33,7 +33,13 @@ export class AppComponent {
   handleSelectionChange(event: Event){
     const select = event.target as HTMLSelectElement;
     const value = select.value;
+    const weightInput = document.getElementById('weight') as HTMLInputElement;
+    const heightInput = document.getElementById('height') as HTMLInputElement;
     if (value === 'metric') {
+      weightInput.value = '';
+      heightInput.value = '';
+      this.weight = 0;
+      this.height = 0;
       this.weight_unit = 'kg';
       this.height_unit = 'm';
       this.min_weight = 40.5;
@@ -41,6 +47,10 @@ export class AppComponent {
       this.min_height = 1.40;
       this.max_height = 2.25;
     } else if (value === 'imperial') {
+      weightInput.value = '';
+      heightInput.value = '';
+      this.weight = 0;
+      this.height = 0;
       this.weight_unit = 'lb';
       this.height_unit = 'in';
       this.min_weight = this.kgToLb(this.min_weight);
@@ -49,7 +59,7 @@ export class AppComponent {
       this.max_height = this.mToIn(this.max_height);
     }
     this.metrix = value;
-    this.calculateCalories();
+    this.calculateCalories()
   }
 
     handleInputChange(event: Event){
@@ -57,7 +67,6 @@ export class AppComponent {
     const value = parseFloat(input.value);
     if (input.id === 'weight') {
       this.weight = (this.metrix === 'metric') ? this.kgToLb(value) : value;
-      // console.log('Peso: '+this.weight+ ' Factor: ' + this.factor + 'min: '+this.min_weight + 'max: ' + this.max_weight);
       this.validateWeight();
     } else if (input.id === 'height') {
       this.height = (this.metrix === 'metric') ? this.mToIn(value) : value;
