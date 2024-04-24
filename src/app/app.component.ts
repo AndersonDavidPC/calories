@@ -49,9 +49,10 @@ export class AppComponent {
       this.max_height = this.mToIn(this.max_height);
     }
     this.metrix = value;
+    this.calculateCalories();
   }
 
-  handleInputChange(event: Event){
+    handleInputChange(event: Event){
     const input = event.target as HTMLInputElement;
     const value = parseFloat(input.value);
     if (input.id === 'weight') {
